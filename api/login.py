@@ -22,7 +22,12 @@ def login_user():
     if not user:
         return jsonify({
             'ststus': True,
-            'user': user,
+            'user': {
+                'id': user['id'],
+                'full_name': user['full_name'],
+                'email': user['email'],
+                'role': user['role_name']
+            },
             'message': 'Успешный вход'
         })
     return jsonify({

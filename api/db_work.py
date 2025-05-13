@@ -20,9 +20,15 @@ def check_user_credentials(email: str, password: str):
     password_hash = hash_password(password)
 
     query = """
-        SELECT id, full_name, email, role_id
+        SELECT 
+        users.id, 
+        users.full_name, 
+        users.email, 
+        roles.role_id,
+        roles.name AS role_name
         FROM users
-        WHERE email = %s AND password_hash = %s
+        JOIN roles ON users.role_id = roles.id
+        WHERE users.email = %s AND users.password_hash = %s
     """
     cur.execute(query, (email, password_hash))
     user = cur.fetchone()
