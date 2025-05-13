@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
+from datetime import datetime
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -37,3 +38,36 @@ def check_user_credentials(email: str, password: str):
     conn.close()
 
     return user
+
+def save_data_to_db(full_name, email, password, passport_number, birth_date, phone = "-", role = "Гость"):
+    password_hash = hash_password(password)
+    created_at = datetime.utcnow()
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id FROM roles WHERE name = %s", (email,))
+    role_row = cur.fetchone()
+    if role_row:
+        raise ValueError("Указанная роль не найдена")
+    role_id = role_row[0]
+
+    cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+    if cur.fetchone():
+        raise ValueError("Пользователь с такой почтой уже существует")
+
+    cur.execute("""
+        INSERT INTO users(
+        full_name, email,
+        password_hash, role_id,
+        passport_number, birth_date,
+        phone, created_at,) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+    """, (
+        full_name, email, password_hash, role_id,
+        passport_number, birth_date, phone, created_at
+    ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
