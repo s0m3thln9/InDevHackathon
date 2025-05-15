@@ -71,3 +71,29 @@ def save_data_to_db(full_name, email, password, passport_number, birth_date, pho
     cur.close()
     conn.close()
 
+    def num_free_rooms():
+        pass
+
+    def num_busy_rooms():
+        pass
+
+    def num_need_cleanimg_room():
+        pass
+
+    def num_guests():
+        pass
+
+    def get_data_for_grafic():
+        pass
+
+    def future_booking():
+        pass
+
+    def create_booking():
+        pass
+
+    # ПРОБЛЕМЫ ТЕХНИКИ
+
+    def change_roles():
+        pass
+
