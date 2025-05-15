@@ -27,6 +27,7 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     "prettier/prettier": ["error", { endOfLine: "auto" }],
+    "jsx-a11y/label-has-associated-control": "off",
   },
   settings: {
     react: {

@@ -1,7 +1,8 @@
+import { Register } from "@pages/register"
 function App() {
   return (
     <>
-      <h1 className="text-2xl text-violet-600">Hello</h1>
+      <Register />
     </>
   )
 }
