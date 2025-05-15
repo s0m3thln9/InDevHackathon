@@ -1,34 +1,38 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from db_work import num_free_rooms, num_busy_rooms, num_need_cleaning_rooms, num_guests,nearest_booking, booking_stats_for_week, overdue_cleanings
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/api/admin/home', methods=['POST'])
 def admin_home():
-    data = request.json
+    try:
+        free_rooms = num_free_rooms()
+        busy_rooms = num_busy_rooms()
+        need_cleaning = num_need_cleaning_rooms()
+        guests = num_guests()
+        nearest = nearest_booking()
+        booking_week = booking_stats_for_week()
+        # Проблемы
+        overdue = overdue_cleanings()
 
-    # Я передаю
-
-    # Количество свободных номеров на сегодня
-    # Количество заброннированных номеров на сегодня
-    # Количество номеров требуемы в уборке
-    # Количество гостей
-
-    #График генерируемый на день
-
-    # Ближайшая бронь, ФИО, Время, Номер
-
-    # Обработка создание брони
-
-    # Не работает техника номера
-    # Просрочена уборка номера
-    # Не работает дверь номера
-
-    # Обработка открыть дверь
-    # Обрабока управление устройствами
-    # Добавить пользователя
-    # Изменить роль
+        return jsonify({
+            'status': True,
+            'free_rooms': free_rooms,
+            'busy_rooms': busy_rooms,
+            'need_cleaning': need_cleaning,
+            'guests': guests,
+            'nearest_booking': nearest,
+            'booking_stats': booking_week,
+            # Поломка
+            'overdue_cleanings': overdue
+        })
+    except Exception as e:
+        return jsonify({
+            'status': False,
+            'message': str(e)
+        })
 
 @app.route('/api/admin/home', methods=['OPTIONS'])
 def admin_home_options():
