@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import hashlib
 from datetime import datetime
+from datetime import date
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -72,22 +73,89 @@ def save_data_to_db(full_name, email, password, passport_number, birth_date, pho
     conn.close()
 
     def num_free_rooms():
-        pass
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT COUNT(*) FROM rooms
+            WHERE is_active = TRUE
+            AND id NOT IN(
+                SELECT room_id FROM boorings
+                WHERE CURRENT_DATE BETWEEN check_in AND check_out
+            )
+        """)
+
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        return result
 
     def num_busy_rooms():
-        pass
+        conn = get_db_connection()
+        cur = conn.cursor()
 
-    def num_need_cleanimg_room():
-        pass
+        cur.execute("""
+            SELECT COUNT(DISTINCT room_id) FROM bookings
+            WHERE CURRENT_DATE BETWEEN check_in AND check_out
+        """)
+
+        result = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        return result
+
+    def num_need_cleanimg_rooms():
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT COUNT(*) FROM cleaning_schedule
+            WHERE status = 'Запланировано'
+            AND scheduled_at::date = CURRENT_DATE
+        """)
+
+        result = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        return result
 
     def num_guests():
-        pass
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT COUNT(DISTINCT user_id) FROM bookings
+            WHERE CURRENT_DATE BETWEEN check_in AND check_out
+        """)
+
+        result = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        return result
 
     def get_data_for_grafic():
         pass
 
-    def future_booking():
-        pass
+    def nearest_booking():
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+
+        cur.execute("""
+            SELECT
+                bookings.check_in,
+                users.full_name,
+                bookings.room_id
+            FROM bookings
+            JOIN users ON users.id = bookings.user_id
+            WHERE check_in > CURRENT_DATE
+            ORDER BY check_in ASC
+            LIMIT 1
+        """)
+
+        result = cur.fetchall()
+        cur.close()
+        conn.close()
+        return result
 
     def create_booking():
         pass
