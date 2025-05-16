@@ -44,9 +44,6 @@ export const RegisterForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Заголовок перенесен в родительский компонент */}
-
-      {/* Поле Email */}
       <div>
         <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
           Почта
@@ -63,8 +60,6 @@ export const RegisterForm = () => {
           <p className="mt-2 text-sm text-[#EF4444]">{errors.email.message}</p>
         )}
       </div>
-
-      {/* Поле Пароль */}
       <div>
         <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
           Пароль
@@ -93,8 +88,6 @@ export const RegisterForm = () => {
           </p>
         )}
       </div>
-
-      {/* Поле Подтверждение пароля */}
       <div>
         <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
           Повторите пароль
@@ -129,16 +122,12 @@ export const RegisterForm = () => {
           </p>
         )}
       </div>
-
-      {/* Кнопка регистрации */}
       <button
         type="submit"
         className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED] transition-all duration-200 shadow-md hover:shadow-[#7C3AED]/30"
       >
         Зарегистрироваться
       </button>
-
-      {/* Разделитель */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-[#374151]"></div>
@@ -147,18 +136,15 @@ export const RegisterForm = () => {
           <span className="px-3 bg-[#1F2937] text-[#9CA3AF]">или</span>
         </div>
       </div>
-
-      {/* Кнопка Google */}
       <button
         type="button"
         onClick={handleGoogleAuth}
         className="w-full flex items-center justify-center gap-3 bg-[#111827] border border-[#374151] rounded-lg shadow-sm py-2.5 px-4 text-sm font-medium text-[#F9FAFB] hover:bg-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#3B82F6] transition-colors duration-200"
       >
-        <FaGoogle className="text-[#3B82F6] text-base" />
+        <FaGoogle />
         <span>Регистрация через Google</span>
       </button>
 
-      {/* Ссылка на вход */}
       <div className="text-center text-sm pt-2">
         <span className="text-[#9CA3AF]">Есть аккаунт? </span>
         <button
