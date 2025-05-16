@@ -44,6 +44,11 @@ export const RegisterForm = () => {
           passport_number: "4234243",
           birth_date: new Date(),
           phone: "+375",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       )
 
