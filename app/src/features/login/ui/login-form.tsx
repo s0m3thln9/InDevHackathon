@@ -3,59 +3,32 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa"
 import { useState } from "react"
-import axios from "axios"
 
-const registerSchema = yup.object({
+const loginSchema = yup.object({
   email: yup.string().email("Некорректный email").required("Обязательное поле"),
-  password: yup
-    .string()
-    .min(6, "Минимум 6 символов")
-    .required("Обязательное поле"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")], "Пароли должны совпадать")
-    .required("Подтвердите пароль"),
+  password: yup.string().required("Обязательное поле"),
 })
 
-type RegisterFormData = yup.InferType<typeof registerSchema>
+type LoginFormData = yup.InferType<typeof loginSchema>
 
-export const RegisterForm = () => {
-  const [step, setStep] = useState(1)
-  const [formData, setFormData] = useState<Partial<RegisterFormData>>({})
+export const LoginForm = () => {
+  const [formData, setFormData] = useState<Partial<LoginFormData>>({})
   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: yupResolver(registerSchema),
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
   })
 
-  const onSubmit = async (data: RegisterFormData) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/registration",
-        {
-          email: data.email,
-          password: data.password,
-          full_name: "AA",
-          passport_number: "4234243",
-          birth_date: new Date(),
-          phone: "+375",
-        }
-      )
-
-      console.log("Успешная регистрация:", response.data)
-    } catch (error) {
-      console.log(error)
-    }
+  const onSubmit = (data: LoginFormData) => {
+    setFormData(data)
   }
 
   const handleGoogleAuth = () => {
     console.log("Google auth")
-    setStep(2)
   }
 
   return (
@@ -104,45 +77,11 @@ export const RegisterForm = () => {
           </p>
         )}
       </div>
-      <div>
-        <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
-          Повторите пароль
-        </label>
-        <div className="relative">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            {...register("confirmPassword")}
-            className={`block w-full rounded-lg bg-[#111827] border-[#374151] text-[#F9FAFB] shadow-sm focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
-              errors.confirmPassword ? "border-[#EF4444]" : "border"
-            } px-4 py-3 pr-10 text-sm`}
-            placeholder="Повторите ваш пароль"
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#9CA3AF] hover:text-[#7C3AED] transition-colors"
-            aria-label={
-              showConfirmPassword ? "Скрыть пароль" : "Показать пароль"
-            }
-          >
-            {showConfirmPassword ? (
-              <FaEyeSlash size={16} />
-            ) : (
-              <FaEye size={16} />
-            )}
-          </button>
-        </div>
-        {errors.confirmPassword && (
-          <p className="mt-2 text-sm text-[#EF4444]">
-            {errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
       <button
         type="submit"
         className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED] transition-all duration-200 shadow-md hover:shadow-[#7C3AED]/30"
       >
-        Зарегистрироваться
+        Войти
       </button>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
@@ -158,16 +97,15 @@ export const RegisterForm = () => {
         className="w-full flex items-center justify-center gap-3 bg-[#111827] border border-[#374151] rounded-lg shadow-sm py-2.5 px-4 text-sm font-medium text-[#F9FAFB] hover:bg-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#3B82F6] transition-colors duration-200"
       >
         <FaGoogle />
-        <span>Регистрация через Google</span>
+        <span>Войти через Google</span>
       </button>
-
       <div className="text-center text-sm pt-2">
-        <span className="text-[#9CA3AF]">Есть аккаунт? </span>
+        <span className="text-[#9CA3AF]">Нет аккаунта? </span>
         <button
           type="button"
           className="text-[#3B82F6] hover:text-[#60A5FA] font-medium focus:outline-none focus:underline transition-colors"
         >
-          Войти
+          Зарегистроваться
         </button>
       </div>
     </form>
