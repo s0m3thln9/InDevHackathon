@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from db_work import num_free_rooms, num_busy_rooms, num_need_cleaning_rooms, num_guests,nearest_booking, booking_stats_for_week, overdue_cleanings
+from db_work import num_free_rooms, num_busy_rooms, num_need_cleaning_rooms, num_guests,nearest_booking, booking_stats_for_week, overdue_cleanings, rooms_with_tech_issues
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -14,7 +14,7 @@ def admin_home():
         guests = num_guests()
         nearest = nearest_booking()
         booking_week = booking_stats_for_week()
-        # Проблемы
+        tech_issues = rooms_with_tech_issues()
         overdue = overdue_cleanings()
 
         return jsonify({
@@ -25,7 +25,7 @@ def admin_home():
             'guests': guests,
             'nearest_booking': nearest,
             'booking_stats': booking_week,
-            # Поломка
+            'tech_issues': tech_issues,
             'overdue_cleanings': overdue
         })
     except Exception as e:
