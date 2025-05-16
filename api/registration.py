@@ -7,7 +7,7 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/api/registration', methods=['POST'])
 def registration_user():
-    data = request.json()
+    data = request.get_json()
     full_name = data.get('full_name')
     email = data.get('email')
     password = data.get('password')

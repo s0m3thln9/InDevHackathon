@@ -19,9 +19,9 @@ def login_user():
         })
 
     user = check_user_credentials(email, password)
-    if not user:
+    if user:
         return jsonify({
-            'ststus': True,
+            'status': True,
             'user': {
                 'id': user['id'],
                 'full_name': user['full_name'],
@@ -30,11 +30,12 @@ def login_user():
             },
             'message': 'Успешный вход'
         })
-    return jsonify({
-        'status': False,
-        'user': None,
-        'message': 'Неверный адресс электронной почты или пароль'
-    })
+    else:
+        return jsonify({
+            'status': False,
+            'user': None,
+            'massage': 'Неверный адресс электронной почты или пароль'
+        })
 
 @app.route('/api/register', methods=['OPTIONS'])
 def handle_options():
