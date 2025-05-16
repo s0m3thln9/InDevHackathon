@@ -36,7 +36,7 @@ export const RegisterForm = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/registration",
+        "http://127.0.0.1:5000/api/registration",
         {
           email: data.email,
           password: data.password,
