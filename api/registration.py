@@ -8,37 +8,38 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 @app.route('/api/registration', methods=['POST'])
 def registration_user():
     data = request.get_json()
-    full_name = data.get('full_name')
-    email = data.get('email')
-    password = data.get('password')
-    passport_number = data.get('passport_number')
-    birth_date = data.get('birth_date')
-    phone = data.get('phone') #Не обязательный параметр в БД
-    if phone is None:
-        phone = "-"
-
-    if not full_name or not email or not password or not passport_number or not birth_date:
+    required_fields = ['full_name', 'email', 'password', 'passport_number', 'birth_date']
+    if not all(data.get(field) for field in required_fields):
         return jsonify({
             'status': False,
-            'message': 'Пожалуйста, заполните все поля'
-        })
+            'message': 'Пожалуйста, заполните все обязательные поля'
+        }), 400
+
+    phone = data.get('phone', "-")
 
     try:
-        save_data_to_db(full_name, email, password, passport_number, birth_date, phone)
+        save_data_to_db(
+            data['full_name'],
+            data['email'],
+            data['password'],
+            data['passport_number'],
+            data['birth_date'],
+            phone
+        )
         return jsonify({
             'status': True,
-            'massage': 'Вы успешно зарегистрировались.'
-        })
+            'message': 'Вы успешно зарегистрировались.'
+        }), 201
     except ValueError as e:
         return jsonify({
             'status': False,
             'message': str(e)
-        })
+        }), 400
     except Exception as e:
         return jsonify({
             'status': False,
-            'message': f'Ошибка при регистрации: {e})'
-        })
+            'message': f'Ошибка при регистрации: {str(e)}'
+        }), 500
 
 @app.route('/api/registration', methods=['OPTIONS'])
 def handle_options():
@@ -46,7 +47,8 @@ def handle_options():
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    return response
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 

@@ -9,7 +9,8 @@ def hash_password(password: str) -> str:
 
 def get_db_connection():
     return psycopg2.connect(
-        host='localhost:5432',
+        host='localhost',
+        port=5432,
         database='Smart_hotel',
         user='postgres',
         password='12345',
@@ -49,28 +50,37 @@ def save_data_to_db(full_name, email, password, passport_number, birth_date, pho
 
     cur.execute("SELECT id FROM roles WHERE name = %s", (role,))
     role_row = cur.fetchone()
-    if role_row:
+    if not role_row:
+        cur.close()
+        conn.close()
         raise ValueError("Указанная роль не найдена")
     role_id = role_row[0]
 
     cur.execute("SELECT id FROM users WHERE email = %s", (email,))
     if cur.fetchone():
+        cur.close()
+        conn.close()
         raise ValueError("Пользователь с такой почтой уже существует")
 
-    cur.execute("""
-        INSERT INTO users(
-        full_name, email,
-        password_hash, role_id,
-        passport_number, birth_date,
-        phone, created_at) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
-    """, (
-        full_name, email, password_hash, role_id,
-        passport_number, birth_date, phone, created_at
-    ))
-
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        cur.execute("""
+                INSERT INTO users(
+                    full_name, email,
+                    password_hash, role_id,
+                    passport_number, birth_date,
+                    phone, created_at) 
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+            full_name, email, password_hash, role_id,
+            passport_number, birth_date, phone, created_at
+        ))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cur.close()
+        conn.close()
 
 def num_free_rooms():
     conn = get_db_connection()
