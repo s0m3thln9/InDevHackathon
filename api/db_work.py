@@ -97,7 +97,7 @@ def num_free_rooms():
         SELECT COUNT(*) FROM rooms
         WHERE is_active = TRUE
         AND id NOT IN(
-            SELECT room_id FROM booKings
+            SELECT room_id FROM booking
             WHERE CURRENT_DATE BETWEEN check_in AND check_out
         )
     """)
@@ -112,7 +112,7 @@ def num_busy_rooms():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT COUNT(DISTINCT room_id) FROM bookings
+        SELECT COUNT(DISTINCT room_id) FROM booking
         WHERE CURRENT_DATE BETWEEN check_in AND check_out
     """)
 
@@ -141,7 +141,7 @@ def num_guests():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT COUNT(DISTINCT user_id) FROM bookings
+        SELECT COUNT(DISTINCT user_id) FROM booking
         WHERE CURRENT_DATE BETWEEN check_in AND check_out
     """)
 
@@ -158,7 +158,7 @@ def booking_stats_for_week():
         SELECT
             check_in::date AS date,
             COUNT(*) AS count
-        FROM bookings
+        FROM booking
         WHERE check_in BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
         GROUP BY check_in::date
         ORDER BY check_in::date 
@@ -175,11 +175,11 @@ def nearest_booking():
 
     cur.execute("""
         SELECT
-            bookings.check_in,
+            booking.check_in,
             users.full_name,
-            bookings.room_id
-        FROM bookings
-        JOIN users ON users.id = bookings.user_id
+            booking.room_id
+        FROM booking
+        JOIN users ON users.id = booking.user_id
         WHERE check_in > CURRENT_DATE
         ORDER BY check_in ASC
         LIMIT 1
@@ -240,7 +240,7 @@ def get_filtered_rooms(check_in, check_out, guests, one_beds, two_beds):
           AND r.num_one_bed >= %s
           AND r.num_two_bed >= %s
           AND r.id NOT IN (
-              SELECT room_id FROM bookings
+              SELECT room_id FROM booking
               WHERE daterange(check_in, check_out, '[]') && daterange(%s::DATE, %s::DATE, '[]')
           )
         ORDER BY r.room_number
@@ -260,7 +260,7 @@ def get_user_room_access(user_id):
 
     cur.execute("""
         SELECT r.id AS room_id, r.room_number, c.ble_name, c.token
-        FROM bookings b
+        FROM booking b
         JOIN rooms r ON r.id = b.room_id
         JOIN controllers c ON c.room_id = r.id
         WHERE b.user_id = %s
@@ -280,7 +280,7 @@ def get_user_devices(user_id):
 
     cur.execute("""
         SELECT room_id
-        FROM bookings
+        FROM booking
         WHERE user_id = %s
           AND CURRENT_DATE BETWEEN check_in AND check_out
           AND status IN ('активен', 'забронирован')
@@ -395,7 +395,7 @@ def get_booking_calendar():
             u.full_name AS guest_name,
             b.check_in,
             b.check_out
-        FROM bookings b
+        FROM booking b
         JOIN rooms r ON b.room_id = r.id
         JOIN users u ON b.user_id = u.id
         WHERE b.check_in <= %s AND b.check_out >= %s

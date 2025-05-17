@@ -12,7 +12,7 @@ import {
   FaUserShield,
 } from "react-icons/fa"
 import axios from "axios"
-import log = require("eslint-plugin-react/lib/util/log")
+
 
 export const AdminPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
