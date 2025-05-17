@@ -36,6 +36,3 @@ def admin_home_options():
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-
-if __name__ == '__main__':
-    app.run(debug=True)

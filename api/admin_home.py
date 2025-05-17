@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from db_work import num_free_rooms, num_busy_rooms, num_need_cleaning_rooms, num_guests,nearest_booking, booking_stats_for_week, overdue_cleanings, rooms_with_tech_issues
+from flask import Blueprint, jsonify
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+admin_home_bp = Blueprint('admin_home', __name__)
 
 @app.route('/api/admin/home', methods=['GET'])
 def admin_home():
@@ -40,6 +40,3 @@ def admin_home_options():
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-
-if __name__ == '__main__':
-    app.run(debug=True)

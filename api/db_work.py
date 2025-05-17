@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictCursor
 import hashlib
 from datetime import datetime
 from datetime import date, timedelta
+from psycopg2 import errors
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -448,6 +449,40 @@ def get_controller_any():
     conn.close()
     return controller
 
+def create_booking(user_id, room_id, check_in, check_out):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute("""
+            INSERT INTO bookings (user_id, room_id, check_in, check_out, status)
+            VALUES (%s, %s, %s, %s, 'забронирован')
+        """, (user_id, room_id, check_in, check_out))
+        conn.commit()
+    except errors.UniqueViolation as e:
+        raise ValueError("Комната уже забронирована в выбранный период")
+    except errors.ExclusionViolation as e:
+        raise ValueError("Комната занята в заданный период (EXCLUDE constraint)")
+    finally:
+        cur.close()
+        conn.close()
+
+def get_device_with_controller(device_id):
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("""
+        SELECT d.id AS device_id, d.name, d.type, d.state,
+               c.ip, c.token, c.ble_name
+        FROM devices d
+        JOIN controllers c ON d.controller_id = c.id
+        WHERE d.id = %s
+    """, (device_id,))
+
+    device = cur.fetchone()
+    cur.close()
+    conn.close()
+    return device
 
 def change_roles():
     pass
