@@ -51,7 +51,10 @@ export const registerUser =
   (credentials: {
     email: string
     password: string
-    username: string
+    full_name: string
+    birth_date: string
+    passport_number: string
+    phone: string
   }): AppThunk =>
   async (dispatch) => {
     try {
