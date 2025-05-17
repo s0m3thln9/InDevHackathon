@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   FaUserCog,
   FaChartLine,
@@ -11,6 +11,8 @@ import {
   FaHome,
   FaUserShield,
 } from "react-icons/fa"
+import axios from "axios"
+import log = require("eslint-plugin-react/lib/util/log")
 
 export const AdminPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -26,6 +28,13 @@ export const AdminPage = () => {
     { type: "Занятые", count: 8, color: "bg-yellow-500" },
     { type: "На обслуживании", count: 3, color: "bg-red-500" },
   ]
+
+  useEffect(() => {
+    const request = async () => {
+      return await axios.get("http://127.0.0.1:5000/api/admin/home")
+    }
+    request().then((r) => console.log(r))
+  }, [])
 
   const upcomingBookings = [
     { id: 1, guest: "Иванов И.И.", room: "101", date: "15.05.2023" },
