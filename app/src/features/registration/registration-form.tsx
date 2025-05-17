@@ -78,6 +78,7 @@ export const RegistrationForm = () => {
         }
       )
       console.log("Успешная регистрация:", response.data)
+      navigate("/login")
     } catch (error) {
       console.error("Ошибка регистрации:", error)
     }

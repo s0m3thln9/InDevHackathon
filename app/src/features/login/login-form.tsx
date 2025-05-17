@@ -43,7 +43,14 @@ export const LoginForm = () => {
           },
         }
       )
+      localStorage.setItem(
+        "authData",
+        JSON.stringify({
+          user: response.data.user,
+        })
+      )
       console.log("Авторизация:", response.data)
+      navigate("/")
     } catch (error) {
       setServerError(error.toString())
     } finally {
