@@ -4,7 +4,8 @@ export const HomePage = () => {
   // const { isAuth, isLoading, role } = useCheckAuth()
   const isAuth = true
   const isLoading = false
-  const role = "user"
+  const user = JSON.parse(localStorage.getItem('authData'))
+  const role = user.user.role
 
   if (isLoading) {
     // return <Spinner />
@@ -16,9 +17,9 @@ export const HomePage = () => {
   }
 
   switch (role) {
-    case "admin":
+    case "Администратор":
       return <Navigate to="/admin" replace />
-    case "user":
+    case "Гость":
       return <Navigate to="/user" replace />
     default:
       return <Navigate to="/login" replace />
