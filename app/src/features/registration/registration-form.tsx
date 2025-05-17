@@ -3,11 +3,10 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { FaGoogle } from "react-icons/fa"
 import { useState } from "react"
+import axios from "axios"
 import { Input } from "@shared/ui/input"
 import { Button } from "@shared/ui/button"
 import { useNavigate } from "react-router-dom"
-import { registerUser } from "@features/registration/model"
-import { useAppDispatch } from "@shared/lib"
 
 const registerStep1Schema = yup.object({
   email: yup.string().email("Некорректный email").required("Обязательное поле"),
@@ -33,7 +32,6 @@ type RegisterStep2Data = yup.InferType<typeof registerStep2Schema>
 type RegisterFormData = RegisterStep1Data & RegisterStep2Data
 
 export const RegistrationForm = () => {
-  const dispatch = useAppDispatch()
   const [step, setStep] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -63,14 +61,24 @@ export const RegistrationForm = () => {
     const completeData: RegisterFormData = { ...step1Data, ...step2Data }
 
     try {
-      await dispatch(
-        registerUser({
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/registration",
+        {
           email: completeData.email,
           password: completeData.password,
-          username: completeData.fullName,
-        })
-      ).unwrap()
-      navigate("/")
+          full_name: completeData.fullName,
+          passport_number: completeData.passportNumber,
+          birth_date: completeData.birthDate,
+          phone: completeData.phone,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      console.log("Успешная регистрация:", response.data)
+      navigate("/login")
     } catch (error) {
       console.error("Ошибка регистрации:", error)
     }
