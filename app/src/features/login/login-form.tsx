@@ -32,7 +32,7 @@ export const LoginForm = () => {
       setIsSubmitting(true)
       setServerError("")
       const response = await axios.post(
-        "http://127.0.0.1:5000/api/registration",
+        "http://127.0.0.1:5000/api/login",
         {
           email: data.email,
           password: data.password,
@@ -45,7 +45,7 @@ export const LoginForm = () => {
       )
       console.log("Авторизация:", response.data)
     } catch (error) {
-      setServerError("Неверный email или пароль")
+      setServerError(error.toString())
     } finally {
       setIsSubmitting(false)
     }

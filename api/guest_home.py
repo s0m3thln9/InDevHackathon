@@ -5,7 +5,7 @@ from api.db_work import get_filtered_rooms
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
-@app.route('/api/guste/home', methods=['POST'])
+@app.route('/api/guest/home', methods=['POST'])
 def get_rooms():
     data = request.json
     check_in = data.get('check_in')
@@ -20,7 +20,7 @@ def get_rooms():
     except Exception as e:
         return jsonify({'status': False, 'message': str(e)})
 
-@app.route('/api/guste/home', methods=['OPTIONS'])
+@app.route('/api/guest/home', methods=['OPTIONS'])
 def admin_home_options():
     response = jsonify({})
     response.headers.add('Access-Control-Allow-Origin', '*')

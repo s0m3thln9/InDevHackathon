@@ -3,7 +3,7 @@ from api.db_work import get_user_room_access
 
 guest_door_bp = Blueprint('guest_door', __name__)
 
-@guest_door_bp.route('/api/open_door', methods=['POST'])
+@guest_door_bp.route('/api/guest/open_door', methods=['POST'])
 def get_open_door_info():
     data = request.json
     user_id = data.get('user_id')
@@ -27,7 +27,7 @@ def get_open_door_info():
             "message": "У вас нет активного номера"
         })
 
-@guest_door_bp.route('/api/guste_door', methods=['OPTIONS'])
+@guest_door_bp.route('/api/guest/guest_door', methods=['OPTIONS'])
 def admin_home_options():
     response = jsonify({})
     response.headers.add('Access-Control-Allow-Origin', '*')

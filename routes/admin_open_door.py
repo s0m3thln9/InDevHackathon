@@ -4,7 +4,7 @@ from utils.door_control import safe_door_control
 
 admin_controller_bp = Blueprint('admin_door', __name__)
 
-@admin_controller_bp.route('/api/admin/open-door', methods=['POST'])
+@admin_controller_bp.route('/api/admin/open_door', methods=['POST'])
 def admin_open_door():
     data = request.json
     room_id = data.get('room_id')
@@ -28,3 +28,10 @@ def admin_open_door():
             'status': False,
             'message': f'Ошибка при открытии двери: {str(e)}'
         })
+
+@admin_controller_bp.route('/api/admin/admin_door', methods=['OPTIONS'])
+def admin_home_options():
+    response = jsonify({})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
