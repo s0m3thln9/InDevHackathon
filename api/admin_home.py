@@ -5,7 +5,7 @@ from db_work import num_free_rooms, num_busy_rooms, num_need_cleaning_rooms, num
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-@app.route('/api/admin/home', methods=['POST'])
+@app.route('/api/admin/home', methods=['GET'])
 def admin_home():
     try:
         free_rooms = num_free_rooms()
@@ -40,3 +40,6 @@ def admin_home_options():
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+
+if __name__ == '__main__':
+    app.run(debug=True)
