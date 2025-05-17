@@ -1,13 +1,31 @@
+import logging
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from api.db_work import save_data_to_db
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 @app.route('/api/registration', methods=['POST'])
 def registration_user():
-    data = request.get_json()
+    logger.info("Получен запрос на регистрацию")
+    try:
+        data = request.get_json(force=True)
+        logger.debug(f"Полученные данные: {data}")
+        if data is None:
+            return jsonify({
+                'status': False,
+                'message': 'Invalid JSON data'
+            }), 400
+    except Exception as e:
+        return jsonify({
+            'status': False,
+            'message': f'Error parsing JSON: {str(e)}'
+        }), 400
+
     required_fields = ['full_name', 'email', 'password', 'passport_number', 'birth_date']
     if not all(data.get(field) for field in required_fields):
         return jsonify({
@@ -18,13 +36,14 @@ def registration_user():
     phone = data.get('phone', "-")
 
     try:
+        logger.exception("bd")
         save_data_to_db(
             data['full_name'],
             data['email'],
             data['password'],
             data['passport_number'],
             data['birth_date'],
-            phone
+            data['phone']
         )
         return jsonify({
             'status': True,
@@ -36,6 +55,7 @@ def registration_user():
             'message': str(e)
         }), 400
     except Exception as e:
+        logger.exception(f'str(e)')
         return jsonify({
             'status': False,
             'message': f'Ошибка при регистрации: {str(e)}'
