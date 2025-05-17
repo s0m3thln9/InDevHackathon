@@ -2,9 +2,12 @@ import axios from "axios"
 
 export const registrationApi = {
   register: async (credentials: {
-    username: string
     email: string
     password: string
+    full_name: string
+    birth_date: string
+    passport_number: string
+    phone: string
   }) => {
     const response = await axios.post(
       "http://127.0.0.1:5000/api/registration",
