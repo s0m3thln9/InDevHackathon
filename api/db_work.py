@@ -27,7 +27,7 @@ def check_user_credentials(email: str, password: str):
         users.id, 
         users.full_name, 
         users.email, 
-        roles.role_id,
+        users.role_id,
         roles.name AS role_name
         FROM users
         JOIN roles ON users.role_id = roles.id
@@ -431,6 +431,17 @@ def get_controller_by_room(room_id):
         FROM controllers
         WHERE room_id = %s
     """, (room_id,))
+    controller = cur.fetchone()
+
+    cur.close()
+    conn.close()
+    return controller
+
+def get_controller_any():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("SELECT * FROM controllers LIMIT 1")
     controller = cur.fetchone()
 
     cur.close()

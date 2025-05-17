@@ -45,7 +45,7 @@ export const LoginForm = () => {
       )
       console.log("Авторизация:", response.data)
     } catch (error) {
-      setServerError("Неверный email или пароль")
+      setServerError(error.toString())
     } finally {
       setIsSubmitting(false)
     }
